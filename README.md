@@ -68,10 +68,48 @@ python rag_api.py
 ### RAG API --> LM Studio
 * Request
 ```
-json
+{
+   "model":"llm",
+   "messages":[
+      {
+         "role":"system",
+         "content":"You are a useful assistant."
+      },
+      {
+         "role":"user",
+         "content":" You are an AI thai language model assistant.
+                     Answer the question based ONLY on the following context.
+                     ข้าวซอยเป็นอาหารเหนือที่มีเอกลักษณ์ ใช้เส้นบะหมี่ไข่ในน้ำแกงกะทิเข้มข้น ใส่เนื้อไก่หรือเนื้อวัว โรยหน้าด้วยบะหมี่ทอดกรอบ เสิร์ฟพร้อมหอมแดงดอง มะนาว และผักดอง;
+                     ส้มตำเป็นอาหารอีสานยอดนิยม ทำจากมะละกอดิบขูดฝอย คลุกเคล้ากับน้ำปลา มะนาว พริก กระเทียม มะเขือเทศ และถั่วฝักยาว ให้รสจัดจ้าน เปรี้ยว เผ็ด เค็มและหวานเล็กน้อย
+                     Original question: อาหารเหนือมีอะไรบ้าง "
+      }
+   ]
+}
 ```
 
 * Response
 ```
-json
+{
+   "id":"chatcmpl-uyti5avhnlf38be58kqy5",
+   "object":"chat.completion",
+   "created":1745069487,
+   "model":"llama-3.2-3b-instruct",
+   "choices":[
+      {
+         "index":0,
+         "logprobs":"None",
+         "finish_reason":"stop",
+         "message":{
+            "role":"assistant",
+            "content":"ข้าวซอยเป็นอาหารเหนือที่มีเอกลักษณ์"
+         }
+      }
+   ],
+   "usage":{
+      "prompt_tokens":240,
+      "completion_tokens":22,
+      "total_tokens":262
+   },
+   "system_fingerprint":"llama-3.2-3b-instruct"
+}
 ```
