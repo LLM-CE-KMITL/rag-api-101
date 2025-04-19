@@ -1,7 +1,7 @@
 # RAG API
 
 ## Overall
-![RAG 101 System Architecture](rag-101-flow.jpg)
+![RAG 101 System Architecture](images/rag-101-flow.jpg)
 
 
 ## LM Studio API
@@ -17,6 +17,7 @@ python rag_api.py
 
 ## Try Chatting
 * Open my-chat.html
+![RAG 101 System Architecture](images/my-chat.jpg)
 
 ## Example Input and Output
 
