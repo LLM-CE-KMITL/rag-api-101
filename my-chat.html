@@ -1,68 +1,1 @@
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>My Chat</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    #chat { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; }
-    .message { margin-bottom: 10px; }
-    .user { font-weight: bold; color: blue; }
-    .assistant { font-weight: bold; color: green; }
-    footer{ text-align:center; background-color:#f9f9f9; padding:10px; margin-top:30px; font-size:8px; height:40px;  display:}
-    footer p { inline-block; vertical-align: middle; }
-  </style>
-</head>
-<body>
-  <h1>My Chat</h1>
-  <div id="chat"></div>
-  <form id="chat-form">
-    <input type="text" id="user-input" placeholder="Type a message..." required style="width: 80%;" />
-    <button type="submit">Send</button>
-  </form>
-
-  <footer> <p>Coded by ChatGPT </p></footer>
-
-  <script>
-    const chat = document.getElementById('chat');
-    const form = document.getElementById('chat-form');
-    const input = document.getElementById('user-input');
-
-    const messages = [{role:'system', content:'You are a useful assistant.'}];
-
-    function appendMessage(role, content) {
-      const div = document.createElement('div');
-      div.className = 'message';
-      div.innerHTML = `<span class="${role}">${role}:</span> ${content}`;
-      chat.appendChild(div);
-      chat.scrollTop = chat.scrollHeight;
-    }
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const userMessage = input.value;
-      input.value = '';
-      appendMessage('user', userMessage);
-
-      messages.push({ role: 'user', content: userMessage });
-
-      const response = await fetch('http://127.0.0.1:5000/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          model: 'llm', // Replace with your model ID if needed
-          messages: messages
-        })
-      });
-
-      const data = await response.json();
-      const reply = data.choices[0].message.content;
-      appendMessage('assistant', reply);
-      messages.push({ role: 'assistant', content: reply });
-    });
-  </script>
-</body>
-</html>
+<!DOCTYPE html><html lang="en"><head>  <meta charset="UTF-8" />  <title>My Chat</title>  <style>    body { font-family: Arial, sans-serif; margin: 20px; }    #chat { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; }    #chat-form {margin-top: 10px;}    .message { margin-bottom: 10px; }    .user { font-weight: bold; color: blue; }    .assistant { font-weight: bold; color: green; }    footer{ text-align:center; background-color:#f9f9f9; padding:10px; margin-top:30px; font-size:8px; height:40px;  display:}    footer p { inline-block; vertical-align: middle; }    #settings { margin-bottom: 15px; padding: 10px; background-color: #f5f5f5; border-radius: 5px; }    #settings input[type="number"] { width: 80px; }    #settings div {margin-right: 40px; float:left}  </style></head><body>  <h1>My Chat</h1>    <div id="settings">    <div style="margin-bottom: 10px;">      <label for="port-number">Server Port: </label>      <input type="number" id="port-number" value="5000" min="1" max="65535" />    </div>    <div style="margin-bottom: 10px;">      <label for="model-name">Model Name: </label>      <input type="text" id="model-name" value="llm" style="width: 150px;" />    </div>    <button type="button" id="save-settings">Save Settings</button>  </div>    <div id="chat"></div>  <form id="chat-form">    <input type="text" id="user-input" placeholder="Type a message..." required style="width: 80%;" />    <button type="submit">Send</button>  </form>  <footer> <p>Coded by ChatGPT & Claude</p></footer>  <script>    const chat = document.getElementById('chat');    const form = document.getElementById('chat-form');    const input = document.getElementById('user-input');    const portInput = document.getElementById('port-number');    const modelInput = document.getElementById('model-name');    const saveSettingsBtn = document.getElementById('save-settings');    const messages = [{role:'system', content:'You are a useful assistant.'}];        // Default values    let serverPort = 5000;    let modelName = 'llm';        // Load saved settings if available    if (localStorage.getItem('chatServerPort')) {      serverPort = parseInt(localStorage.getItem('chatServerPort'));      portInput.value = serverPort;    }        if (localStorage.getItem('chatModelName')) {      modelName = localStorage.getItem('chatModelName');      modelInput.value = modelName;    }        function appendMessage(role, content) {      const div = document.createElement('div');      div.className = 'message';      div.innerHTML = `<span class="${role}">${role}:</span> ${content}`;      chat.appendChild(div);      chat.scrollTop = chat.scrollHeight;    }        // Save settings    saveSettingsBtn.addEventListener('click', () => {      // Validate and save port      const newPort = parseInt(portInput.value);      if (newPort >= 1 && newPort <= 65535) {        serverPort = newPort;        localStorage.setItem('chatServerPort', serverPort);      } else {        appendMessage('system', 'Invalid port number. Please enter a value between 1 and 65535.');        portInput.value = serverPort;        return;      }            // Save model name      const newModel = modelInput.value.trim();      if (newModel) {        modelName = newModel;        localStorage.setItem('chatModelName', modelName);      } else {        appendMessage('system', 'Model name cannot be empty.');        modelInput.value = modelName;        return;      }            appendMessage('system', `Settings updated: Port=${serverPort}, Model=${modelName}`);    });        form.addEventListener('submit', async (e) => {      e.preventDefault();      const userMessage = input.value;      input.value = '';      appendMessage('user', userMessage);      messages.push({ role: 'user', content: userMessage });            try {        const response = await fetch(`http://127.0.0.1:${serverPort}/v1/chat/completions`, {          method: 'POST',          headers: {            'Content-Type': 'application/json'          },          body: JSON.stringify({            model: modelName,            messages: messages          })        });                const data = await response.json();        const reply = data.choices[0].message.content;        appendMessage('assistant', reply);        messages.push({ role: 'assistant', content: reply });      } catch (error) {        appendMessage('system', `Error: Could not connect to server at port ${serverPort}. Check if the server is running and the port is correct.`);      }    });  </script></body></html>

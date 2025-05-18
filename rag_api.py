@@ -23,11 +23,10 @@ em = EmbeddingModel(EmbeddingModel.BGE_RERANKER_V2_M3)
 HOST = 'localhost'
 PORT = 9200
 USERNAME = 'admin'
-PASSWORD = 'Rathachai.007'
-CA_CERTS_PATH = '/Users/rathachai/Library/CloudStorage/OneDrive-KMITL/GHPROJ/RAG/root-ca.pem'
+PASSWORD = '@PassWord.1234'
 
 ros = RAG_OpenSearch()
-ros.connect_vector_db(host=HOST, port=PORT, username=USERNAME, password=PASSWORD, ca_certs_path=CA_CERTS_PATH)
+ros.connect_vector_db(host=HOST, port=PORT, username=USERNAME, password=PASSWORD)
 ros.set_embedding_model(em)
 
 
@@ -41,7 +40,7 @@ ros.delete_vector_space(VEC_SPACE)
 ros.create_vector_space(VEC_SPACE)
 
 
-############# ADD EXAMPLE DATA ############
+############# ADD MANY ITEMS and QUERY ############
 
 
 items = [
@@ -70,8 +69,30 @@ items = [
 
 ros.store_many_items(VEC_SPACE, items)
 
-# ros.query(VEC_SPACE, "อาหารเหนือมีอะไร", 3)
 
+# ros.query(VEC_SPACE, "อาหารเหนือมีอะไร", 2)
+
+"""
+data = {
+   "model":"llm",
+   "messages":[
+      {
+         "role":"system",
+         "content":"You are a useful assistant."
+      },
+      {
+         "role":"user",
+         "content":"อาหารเหนือมีอะไรบ้าง"
+      }
+   ]
+}
+    
+request = data
+
+
+
+
+"""
 
 ##############################################
 ########     HELPERS  FUNCTIONS       ########
@@ -95,7 +116,7 @@ def to_chat(data):
         
     last_query = data['messages'][-1]['content']
         
-    context_res = ros.query(VEC_SPACE, last_query, 3)
+    context_res = ros.query(VEC_SPACE, last_query, 2)
     print("QUERY: ", last_query)
     print("CONTEXT: last_query", context_res)
 
@@ -136,7 +157,7 @@ if __name__ == '__main__':
     app.run()
     
     
-#############################################
+##########
 
 
 
