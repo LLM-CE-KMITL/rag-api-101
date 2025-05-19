@@ -14,7 +14,7 @@ import requests
 ############# SET EMBEDDING MODEL ############
 
 
-em = EmbeddingModel(EmbeddingModel.BGE_RERANKER_V2_M3)
+em = EmbeddingModel(EmbeddingModel.BGE_M3)
 
 
 ############# INITIAL OPENSEARCH ############
